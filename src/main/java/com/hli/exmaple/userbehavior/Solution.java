@@ -22,6 +22,7 @@ class Solution {
 
     public int solution(String start_date, String end_date, String[] login_dates) {
         int answer = -1;
+        max=0;
         startMonth=Integer.parseInt(start_date.substring(0,2));
         startDay=Integer.parseInt(start_date.substring(3,5));
         String temp=start_date.substring(6);
