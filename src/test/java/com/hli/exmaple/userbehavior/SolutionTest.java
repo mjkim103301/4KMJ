@@ -115,7 +115,8 @@ class SolutionTest {
             }
         }
 
-        System.out.println(Arrays.toString(loginDates));
+        //System.out.println("365일 로그인 했을 때: \n"+ Arrays.toString(loginDates));
+
         testCases.add(new TestCase("01/01 FRI", "12/31"
                 ,loginDates
                 , 261));
