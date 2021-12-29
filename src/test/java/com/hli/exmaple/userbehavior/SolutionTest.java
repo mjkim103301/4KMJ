@@ -3,12 +3,15 @@ package com.hli.exmaple.userbehavior;
 import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SolutionTest {
     private ArrayList<TestCase> testCases=new ArrayList<>();
     private Solution solution=new Solution();
+    private final int NUMBER_OF_DAYS_IN_A_YEAR=365;
+    private final int[] LAST_DAY_OF_THE_MONTH={0,31,28,31,30,31,30,31,31,30,31,30,31};
 
     @BeforeEach
     void setTestCasesClear(){
@@ -86,11 +89,35 @@ class SolutionTest {
     }
 
     @Test
-    @Disabled
-    @DisplayName("케이스 7: 365일 모두 방문했을 때")
+    @DisplayName("케이스 7: 2021년 365일 모두 방문했을 때")
     void testCase7() {
-        testCases.add(new TestCase("05/04 MON", "05/30"
-                , new String[]{"05/26", "05/25", "05/27", "05/10", "05/11", "05/23", "05/22", "05/21", "05/06", "05/09", "05/07", "05/08"}
-                , 5));
+        String []loginDates=new String[NUMBER_OF_DAYS_IN_A_YEAR];
+
+        int index=0;
+        for(int month=1;month<=12;month++){
+
+            String date="";
+            if(month<10){
+                date+="0"+month;
+            }else{
+                date+=month;
+            }
+            date+="/";
+
+            for(int day=1;day<=LAST_DAY_OF_THE_MONTH[month];day++){
+                if(day<10){
+                    date+="0"+day;
+                }else{
+                    date+=day;
+                }
+                loginDates[index++]=date;
+                date=date.substring(0,3);
+            }
+        }
+
+        System.out.println(Arrays.toString(loginDates));
+        testCases.add(new TestCase("01/01 FRI", "12/31"
+                ,loginDates
+                , 261));
     }
 }
