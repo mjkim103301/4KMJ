@@ -8,19 +8,19 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SolutionTest {
-    private ArrayList<TestCase> testCases=new ArrayList<>();
-    private Solution solution=new Solution();
-    private final int NUMBER_OF_DAYS_IN_A_YEAR=365;
-    private final int[] LAST_DAY_OF_THE_MONTH={0,31,28,31,30,31,30,31,31,30,31,30,31};
+    private ArrayList<TestCase> testCases = new ArrayList<>();
+    private Solution solution = new Solution();
+    private final int NUMBER_OF_DAYS_IN_A_YEAR = 365;
+    private final int[] LAST_DAY_OF_THE_MONTH = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     @BeforeEach
-    void setTestCasesClear(){
+    void setTestCasesClear() {
         testCases.clear();
     }
 
     @AfterEach
-    void testRun(){
-        for(TestCase item: testCases){
+    void testRun() {
+        for (TestCase item : testCases) {
             assertEquals(item.answer, solution.solution(item.startDate, item.endDate, item.loginDates));
         }
     }
@@ -76,7 +76,7 @@ class SolutionTest {
     @DisplayName("케이스 5: 주말만 접속했을 때")
     void testCase5() {
         testCases.add(new TestCase("05/26 SAT", "06/17"
-                , new String[]{"06/17","06/02", "06/03","05/26","05/27",  "06/16",  "06/09", "06/10"}
+                , new String[]{"06/17", "06/02", "06/03", "05/26", "05/27", "06/16", "06/09", "06/10"}
                 , 0));
     }
 
@@ -91,34 +91,34 @@ class SolutionTest {
     @Test
     @DisplayName("케이스 7: 2021년 365일 모두 방문했을 때")
     void testCase7() {
-        String []loginDates=new String[NUMBER_OF_DAYS_IN_A_YEAR];
+        String[] loginDates = new String[NUMBER_OF_DAYS_IN_A_YEAR];
 
-        int index=0;
-        for(int month=1;month<=12;month++){
+        int index = 0;
+        for (int month = 1; month <= 12; month++) {
 
-            String date="";
-            if(month<10){
-                date+="0"+month;
-            }else{
-                date+=month;
+            String date = "";
+            if (month < 10) {
+                date += "0" + month;
+            } else {
+                date += month;
             }
-            date+="/";
+            date += "/";
 
-            for(int day=1;day<=LAST_DAY_OF_THE_MONTH[month];day++){
-                if(day<10){
-                    date+="0"+day;
-                }else{
-                    date+=day;
+            for (int day = 1; day <= LAST_DAY_OF_THE_MONTH[month]; day++) {
+                if (day < 10) {
+                    date += "0" + day;
+                } else {
+                    date += day;
                 }
-                loginDates[index++]=date;
-                date=date.substring(0,3);
+                loginDates[index++] = date;
+                date = date.substring(0, 3);
             }
         }
 
         //System.out.println("365일 로그인 했을 때: \n"+ Arrays.toString(loginDates));
 
         testCases.add(new TestCase("01/01 FRI", "12/31"
-                ,loginDates
+                , loginDates
                 , 261));
     }
 }

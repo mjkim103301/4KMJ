@@ -3,142 +3,120 @@ package com.hli.exmaple.userbehavior;
 import java.util.*;
 
 class Solution {
-    class Node{
-        int month;
-        int day;
-        public Node(){}
-        public Node(int month, int day){
-            this.month=month;
-            this.day=day;
-        }
-    }
-    Node[][]calendar;
-    boolean[][]visit;
-    String []day={"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
-    int[]lastDay={0,31,28,31,30,31,30,31,31,30,31,30,31};
-    int max, startMonth, startDay, endMonth, endDay;
+    Calendar[][] calendar;
+    Map<String, Integer> dayMap = new HashMap() {{
+        put("SUN", 0);
+        put("MON", 1);
+        put("TUE", 2);
+        put("WED", 3);
+        put("THU", 4);
+        put("FRI", 5);
+        put("SAT", 6);
+    }};
+    final int[] LAST_DAY_OF_THE_MONTH = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    Calendar startDate, endDate;
     int startDayOfWeek;
-    int size;
+    int calendarSize;
+    int maxNumberOfWeekdays;
 
     public int solution(String start_date, String end_date, String[] login_dates) {
-        int answer = -1;
-        max=0;
-        startMonth=Integer.parseInt(start_date.substring(0,2));
-        startDay=Integer.parseInt(start_date.substring(3,5));
-        String temp=start_date.substring(6);
-        for(int i=0;i<7;i++){
-            if(day[i].equals(temp)){
-                startDayOfWeek=i;
-                break;
-            }
-        }
-        //System.out.println(startMonth+" "+startDay+" "+temp+" "+startDayOfWeek);
-        endMonth=Integer.parseInt(end_date.substring(0,2));
-        endDay=Integer.parseInt(end_date.substring(3,5));
-        //1달에 넉넉잡아 5주이므로 5를 곱함
-        size=(endMonth-startMonth+1)*5;
-        calendar=new Node[size][7];
-        visit=new boolean[size][7];
+        maxNumberOfWeekdays = 0;
+        startDate = new Calendar(splitMonth(start_date), splitDay(start_date));
+        endDate = new Calendar(splitMonth(end_date), splitDay(end_date));
+        String dayOfStartDate = start_date.substring(6);
 
-        for(int y=0;y<size;y++){
-            for(int x=0;x<7;x++){
-                calendar[y][x]=new Node();
-            }
-        }
-        // System.out.println(endMonth+" "+endDay);
+        startDayOfWeek = dayMap.get(dayOfStartDate);
+
+        //1달에 넉넉잡아 5주이므로 5를 곱함
+        calendarSize = (endDate.month - startDate.month + 1) * 5;
+        calendar = new Calendar[calendarSize][7];
+
+        initCalendar();
         setCalendar();
-        // printCalendar();
         checkLogin(login_dates);
-        //  printVisit();
-        answer=max;
-        return answer;
+        return maxNumberOfWeekdays;
     }
 
-    public void setCalendar(){
-        int month=startMonth;
-        int day=startDay;
-        for(int x=startDayOfWeek;x<7;x++){
-            calendar[0][x]=new Node(month, day);
 
-            if(month==endMonth && day==endDay){
+    public int splitMonth(String target) {
+        return Integer.parseInt(target.substring(0, 2));
+    }
+
+    public int splitDay(String target) {
+        return Integer.parseInt(target.substring(3, 5));
+    }
+
+    public void initCalendar() {
+        for (int week = 0; week < calendarSize; week++) {
+            for (int day = 0; day < 7; day++) {
+                calendar[week][day] = new Calendar();
+            }
+        }
+    }
+
+    public void setCalendar() {
+        Calendar nextDate = new Calendar(startDate.month, startDate.day);
+
+        //첫주 달력세팅
+        for (int day = startDayOfWeek; day < 7; day++) {
+            if (!makeCalendar(0, day, nextDate)) {
                 return;
             }
-            day++;
-            if(day>lastDay[month]){
-                month++;
-                day=1;
-            }
-
         }
 
-        for(int y=1;y<size;y++){
-            for(int x=0;x<7;x++){
-                calendar[y][x]=new Node(month, day);
-
-                if(month==endMonth && day==endDay){
+        //둘째주부터 달력 세팅
+        for (int week = 1; week < calendarSize; week++) {
+            for (int day = 0; day < 7; day++) {
+                if (!makeCalendar(week, day, nextDate)) {
                     return;
                 }
-                day++;
-                if(day>lastDay[month]){
-                    month++;
-                    day=1;
-                }
-
             }
         }
     }
 
-    public void checkLogin(String[] login_dates){
+    public boolean makeCalendar(int y, int x, Calendar date) {
+        calendar[y][x] = new Calendar(date.month, date.day);
+        if (date.month == endDate.month && date.day == endDate.day) {
+            return false;
+        }
+        date.day += 1;
+        if (date.day > LAST_DAY_OF_THE_MONTH[date.month]) {
+            date.month += 1;
+            date.day = 1;
+        }
+        return true;
+    }
+
+    public void checkLogin(String[] login_dates) {
         Arrays.sort(login_dates);
-        //  System.out.println(Arrays.toString(login_dates));
-        int tempCnt=0;
-        int loginIndex=0;
-        int loginMonth=Integer.parseInt(login_dates[loginIndex].substring(0,2));
-        int loginDay=Integer.parseInt(login_dates[loginIndex++].substring(3,5));
-        int loginSize=login_dates.length;
-        // System.out.println("loginMonth: "+loginMonth+" loginDay: "+loginDay);
-        for(int y=0;y<size;y++){
-            for(int x=0;x<7;x++){
-                Node now=calendar[y][x];
-                if(now.month==loginMonth && now.day==loginDay){
-                    visit[y][x]=true;
-                    if(x>=1 && x<=5){
-                        tempCnt++;
-                        if(max<tempCnt){
-                            max=tempCnt;
-                        }
-                        // System.out.println("temp++ "+ loginMonth+" "+loginDay+" "+tempCnt);
-                    }
-                    if(loginIndex>=loginSize){
-                        return;
-                    }
-                    loginMonth=Integer.parseInt(login_dates[loginIndex].substring(0,2));
-                    loginDay=Integer.parseInt(login_dates[loginIndex++].substring(3,5));
 
-                }else if(x>=1 && x<=5){
-                    tempCnt=0;
+        int tempNumberOfWeekdays = 0;
+        int loginIndex = 0;
+
+        for (int week = 0; week < calendarSize; week++) {
+            for (int day = 0; day < 7; day++) {
+                Calendar now = calendar[week][day];
+                if (now.month == 0) {
+                    continue;
+                }
+                if (loginIndex >= login_dates.length) {
+                    return;
+                }
+                Calendar loginDate = new Calendar(splitMonth(login_dates[loginIndex]), splitDay(login_dates[loginIndex]));
+                if (now.month == loginDate.month && now.day == loginDate.day) {
+                    if (isWeekdays(day)) {
+                        tempNumberOfWeekdays++;
+                        maxNumberOfWeekdays = Math.max(maxNumberOfWeekdays, tempNumberOfWeekdays);
+                    }
+                    loginIndex++;
+                } else if (isWeekdays(day)) {
+                    tempNumberOfWeekdays = 0;
                 }
             }
         }
     }
 
-    public void printCalendar(){
-        for(int y=0;y<size;y++){
-            for(int x=0;x<7;x++){
-                System.out.print(calendar[y][x].month+"/"+calendar[y][x].day+" ");
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
-
-    public void printVisit(){
-        for(int y=0;y<size;y++){
-            for(int x=0;x<7;x++){
-                System.out.print(visit[y][x]+" ");
-            }
-            System.out.println();
-        }
-        System.out.println();
+    public boolean isWeekdays(int day) {
+        return (day >= 1 && day <= 5);
     }
 }
