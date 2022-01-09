@@ -1,9 +1,12 @@
-package com.hli.exmaple.userbehavior;
+package com.hli.example.userbehavior;
 
-import org.junit.jupiter.api.*;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -21,7 +24,7 @@ class SolutionTest {
     @AfterEach
     void testRun() {
         for (TestCase item : testCases) {
-            assertEquals(item.answer, solution.solution(item.startDate, item.endDate, item.loginDates));
+            assertEquals(item.getAnswer(), solution.solution(item.getStartDate(), item.getEndDate(), item.getLoginDates()));
         }
     }
 
