@@ -1,27 +1,31 @@
 package com.hli.example.userbehavior;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class Date {
-    private static final String[] WEEK = {"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
-    private static final Map<String, Integer> DAY_MAP = new HashMap() {{
-        for (int i = 0; i < WEEK.length; i++) {
-            put(WEEK[i], i);
+    private static final List<String> WEEK = Collections.unmodifiableList(Arrays.asList("SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"));
+    private static final Map<String, Integer> DAY_MAP = Collections.unmodifiableMap(new HashMap<String, Integer>() {{
+        for (int i = 0; i < WEEK.size(); i++) {
+            put(WEEK.get(i), i);
         }
-    }};
-    private static final int[] LAST_DAY_OF_THE_MONTH = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-
-    private int month;
-    private int day;
-    private String dayOfTheWeek;
+    }});
+    private static final List<Integer> LAST_DAY_OF_THE_MONTH = Collections.unmodifiableList(Arrays.asList(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31));
+    private final int month;
+    private final int day;
+    private final String dayOfTheWeek;
 
     public Date(String date) {
         month = splitMonth(date);
         day = splitDay(date);
         if (date.length() > 6) {
             dayOfTheWeek = date.substring(6);
+        } else {
+            dayOfTheWeek = "";
         }
     }
 
@@ -58,13 +62,13 @@ public class Date {
 
     private static String getNextDayOfTheWeek(String dayOfTheWeek) {
         int index = DAY_MAP.get(dayOfTheWeek);
-        return WEEK[(++index) % 7];
+        return WEEK.get((++index) % 7);
     }
 
     public Date getNextDate() {
         int nextDay = day + 1;
         int nextMonth = month;
-        if (nextDay > LAST_DAY_OF_THE_MONTH[nextMonth]) {
+        if (nextDay > LAST_DAY_OF_THE_MONTH.get(nextMonth)) {
             nextMonth += 1;
             nextDay = 1;
         }

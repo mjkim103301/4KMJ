@@ -1,10 +1,10 @@
 package com.hli.example.userbehavior;
 
 public class TestCase {
-    private String startDate;
-    private String endDate;
-    private String[] loginDates;
-    private int answer;
+    private final String startDate;
+    private final String endDate;
+    private final String[] loginDates;
+    private final int answer;
 
 
     public TestCase(String startDate, String endDate, String[] loginDates, int answer) {

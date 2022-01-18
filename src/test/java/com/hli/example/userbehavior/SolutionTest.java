@@ -7,14 +7,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SolutionTest {
-    private ArrayList<TestCase> testCases = new ArrayList<>();
-    private Solution solution = new Solution();
-    private final int NUMBER_OF_DAYS_IN_A_YEAR = 365;
-    private final int[] LAST_DAY_OF_THE_MONTH = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    private final List<TestCase> testCases = new ArrayList<>();
+    private final Solution solution = new Solution();
+    private static final List<Integer> LAST_DAY_OF_THE_MONTH = Collections.unmodifiableList(Arrays.asList(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31));
 
     @BeforeEach
     void setTestCasesClear() {
@@ -94,34 +96,36 @@ class SolutionTest {
     @Test
     @DisplayName("케이스 7: 2021년 365일 모두 방문했을 때")
     void testCase7() {
-        String[] loginDates = new String[NUMBER_OF_DAYS_IN_A_YEAR];
-
-        int index = 0;
-        for (int month = 1; month <= 12; month++) {
-
-            String date = "";
-            if (month < 10) {
-                date += "0" + month;
-            } else {
-                date += month;
-            }
-            date += "/";
-
-            for (int day = 1; day <= LAST_DAY_OF_THE_MONTH[month]; day++) {
-                if (day < 10) {
-                    date += "0" + day;
-                } else {
-                    date += day;
-                }
-                loginDates[index++] = date;
-                date = date.substring(0, 3);
-            }
-        }
-
-        //System.out.println("365일 로그인 했을 때: \n"+ Arrays.toString(loginDates));
-
+        String[] loginDates = getDatesOfTheYear();
         testCases.add(new TestCase("01/01 FRI", "12/31"
                 , loginDates
                 , 261));
+    }
+
+    private String[] getDatesOfTheYear() {
+        int index = 0;
+        StringBuilder date = new StringBuilder();
+        String[] datesOfTheYear = new String[365];
+
+        for (int month = 1; month <= 12; month++) {
+            date.delete(0, date.length());
+            if (month < 10) {
+                date.append("0").append(month);
+            } else {
+                date.append(month);
+            }
+            date.append("/");
+
+            for (int day = 1; day <= LAST_DAY_OF_THE_MONTH.get(month); day++) {
+                if (day < 10) {
+                    date.append("0").append(day);
+                } else {
+                    date.append(day);
+                }
+                datesOfTheYear[index++] = date.toString();
+                date = new StringBuilder(date.substring(0, 3));
+            }
+        }
+        return datesOfTheYear;
     }
 }

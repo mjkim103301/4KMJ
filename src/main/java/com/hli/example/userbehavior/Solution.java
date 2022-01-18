@@ -4,6 +4,7 @@ package com.hli.example.userbehavior;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class Solution {
 
@@ -17,31 +18,31 @@ class Solution {
     private static List<Date> buildPeriod(String start_date, String end_date) {
         List<Date> period = new ArrayList<>();
         Date endDate = new Date(end_date);
-
-        Date now = new Date(start_date);
-        period.add(now);
-        while (!now.equals(endDate)) {
-            Date nextDate = now.getNextDate();
+        Date nowDate = new Date(start_date);
+        period.add(nowDate);
+        while (!nowDate.equals(endDate)) {
+            Date nextDate = nowDate.getNextDate();
             period.add(nextDate);
-            now = nextDate;
+            nowDate = nextDate;
         }
 
         return period;
     }
 
     private static int checkLogin(List<Date> period, String[] login_dates) {
-        Arrays.sort(login_dates);
-
         int maxNumberOfWeekdays = 0;
         int tempNumberOfWeekdays = 0;
         int loginIndex = 0;
 
-        for (int i = 0; i < period.size(); i++) {
-            if (loginIndex >= login_dates.length) {
+        List<String> sortedLoginDates = Arrays.stream(login_dates)
+                .sorted()
+                .collect(Collectors.toList());
+
+        for (Date now : period) {
+            if (loginIndex >= sortedLoginDates.size()) {
                 break;
             }
-            Date now = period.get(i);
-            Date loginDate = new Date(login_dates[loginIndex]);
+            Date loginDate = new Date(sortedLoginDates.get(loginIndex));
             if (now.equals(loginDate)) {
                 if (now.isWeekdays()) {
                     tempNumberOfWeekdays++;
