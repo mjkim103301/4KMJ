@@ -44,11 +44,11 @@ class Solution {
             }
             Date loginDate = new Date(sortedLoginDates.get(loginIndex));
             if (now.equals(loginDate)) {
-                if (now.isWeekdays()) {
+                if (now.isWeekday()) {
                     tempNumberOfWeekdays++;
                 }
                 loginIndex++;
-            } else if (now.isWeekdays()) {
+            } else if (now.isWeekday()) {
                 maxNumberOfWeekdays = Math.max(maxNumberOfWeekdays, tempNumberOfWeekdays);
                 tempNumberOfWeekdays = 0;
             }
